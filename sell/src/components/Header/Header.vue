@@ -17,12 +17,12 @@
           <span class="text">{{seller.supports[0].description}}</span>
         </div>
       </div>
-      <div class="support-count" v-if="seller.supports">
+      <div class="support-count" v-if="seller.supports" @click="showDetail">
         <span class="count">{{seller.supports.length}}个</span>
         <i>></i>
       </div>
     </div>
-    <div class="bulletin-wrapper">
+    <div class="bulletin-wrapper" @click="showDetail">
       <span class="bulletin-title"></span>
       <span class="bulletin-text">{{seller.bulletin}}</span>
       <i class="icon">></i>
@@ -30,10 +30,19 @@
     <div class="background">
       <img :src="seller.avatar" alt="" width="100%" height="100%">
     </div>
-    <div class="detail" v-show="detailShow"></div>
+    <div class="detail" v-show="detailShow">
+      <div class="detail-wrapper clearfix">
+        <div class="detail-main">
+          <h1 class="name" v-text="seller.name"></h1>
+          <star :size="48" :score="seller.score"></star>
+        </div>
+      </div>
+      <div class="detail-close">×</div>
+    </div>
   </div>
 </template>
 <script>
+  import star from '../star/star.vue'
   export default {
     data () {
       return {
@@ -45,17 +54,47 @@
         type: Object
       }
     },
+    methods: {
+      showDetail () {
+        this.detailShow = true;
+      }
+    },
     created () {
       this.classMap = ['decrease', 'discount', 'special', 'invoice', 'guarantee']
+    },
+    components: {
+      star
     }
   }
 </script>
 <style>
+  .detail-main .name {
+    font-size: 16px;
+    font-weight: 700;
+    line-height: 16px;
+    text-align: center;
+  }
   .header {
     position: relative;
     color: #fff;
     background: rgba(7, 17, 27, 0.3);
     overflow: hidden;
+  }
+  .detail .detail-close {
+    position: relative;
+    width: 32px;
+    height: 32px;
+    font-size: 32px;
+    margin: -64px auto 0 auto;
+    clear: both;
+  }
+  .detail .detail-wrapper {
+    min-height: 99%;
+  }
+  .detail .detail-wrapper .detail-main {
+    margin-top: 64px;
+    padding-bottom: 64px;
+    font-size: 12px;
   }
   .header .detail {
     position: fixed;
@@ -66,7 +105,6 @@
     height: 100%;
     overflow: auto;
     background: rgba(7, 17, 27, 0.8);
-    filter: blur(10px);
   }
   .header .background {
     position: absolute;
