@@ -34,19 +34,38 @@
       <div class="detail-wrapper clearfix">
         <div class="detail-main">
           <h1 class="name" v-text="seller.name"></h1>
-          <star :size="48" :score="seller.score"></star>
+          <div class="star-wrapper">
+            <star :size="48" :score="seller.score"></star>
+          </div>
+          <div class="otitle">
+            <titleline :text="titleText[0]"></titleline>
+          </div>
+          <ul v-if="seller.supports" class="supports">
+            <li class="support-item" v-for="(item, index) in seller.supports">
+              <span class="icon" :class="classMap[seller.supports[index].type]"></span>
+              <span class="text">{{seller.supports[index].description}}</span>
+            </li>
+          </ul>
+          <div class="otitle">
+            <titleline :text="titleText[1]"></titleline>
+          </div>
+          <div class="bulletin">
+            <div class="content">{{seller.bulletin}}</div>
+          </div>
         </div>
       </div>
-      <div class="detail-close">×</div>
+      <div class="detail-close" @click="hideDetail">×</div>
     </div>
   </div>
 </template>
 <script>
   import star from '../star/star.vue'
+  import titleline from '../titleLine/titleLine.vue'
   export default {
     data () {
       return {
-        detailShow: false
+        detailShow: false,
+        titleText: ['优惠信息', '商家公告']
       }
     },
     props: {
@@ -57,17 +76,57 @@
     methods: {
       showDetail () {
         this.detailShow = true;
+      },
+      hideDetail () {
+        this.detailShow = false;
       }
     },
     created () {
       this.classMap = ['decrease', 'discount', 'special', 'invoice', 'guarantee']
     },
     components: {
-      star
+      star,
+      titleline
     }
   }
 </script>
 <style>
+  .header .detail-main .bulletin {
+    width: 80%;
+    margin: 0 auto;
+  }
+  .bulletin .content {
+    margin: 0 12px;
+    font-size: 12px;
+    font-weight: 200;
+    line-height: 24px;
+  }
+  .header .detail-main .supports .icon {
+    width: 16px;
+    height: 16px;
+  }
+  .header .detail-main .supports .text {
+    font-size: 12px;
+    font-weight: 200;
+    line-height: 12px;
+    margin-left: 6px;
+  }
+  .detail-main .supports .support-item {
+    margin: 0 12px 12px 12px;
+  }
+  .detail-main .supports .support-item:last-child {
+    margin-bottom: 0;
+  }
+  .detail-main .otitle,
+  .detail-main .supports {
+    width: 80%;
+    margin: 0 auto;
+  }
+  .detail-main .star-wrapper {
+    margin-top: 16px;
+    margin-bottom: 28px;
+    text-align: center;
+  }
   .detail-main .name {
     font-size: 16px;
     font-weight: 700;
@@ -105,6 +164,7 @@
     height: 100%;
     overflow: auto;
     background: rgba(7, 17, 27, 0.8);
+    backdrop-filter: blur(10px)
   }
   .header .background {
     position: absolute;
@@ -173,24 +233,44 @@
     height: 12px;
   }
   .header .supports .decrease {
-    background: url("discount_1@2x.png") no-repeat;
+    background: url("decrease_1@2x.png") no-repeat;
     background-size: 12px 12px;
+  }
+  .header .detail-main .supports .decrease {
+    background: url("decrease_2@2x.png") no-repeat;
+    background-size: 16px 16px;
   }
   .header .supports .discount {
     background: url("discount_1@2x.png") no-repeat;
     background-size: 12px 12px;
   }
+  .header .detail-main .supports .discount {
+    background: url("discount_2@2x.png") no-repeat;
+    background-size: 16px 16px;
+  }
   .header .supports .guarantee {
     background: url("guarantee_1@2x.png") no-repeat;
     background-size: 12px 12px;
+  }
+  .header .detail-main .supports .guarantee {
+    background: url("guarantee_2@2x.png") no-repeat;
+    background-size: 16px 16px;
   }
   .header .supports .invoice {
     background: url("invoice_1@2x.png") no-repeat;
     background-size: 12px 12px;
   }
+  .header .detail-main .supports .invoice {
+    background: url("invoice_2@2x.png") no-repeat;
+    background-size: 16px 16px;
+  }
   .header .supports .special {
     background: url("special_1@2x.png") no-repeat;
     background-size: 12px 12px;
+  }
+  .header .detail-main .supports .special {
+    background: url("special_2@2x.png") no-repeat;
+    background-size: 16px 16px;
   }
   .header .content-wrapper {
     padding: 24px 12px 18px 24px;
