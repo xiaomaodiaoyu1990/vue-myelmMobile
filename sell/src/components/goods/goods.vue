@@ -29,18 +29,22 @@
                   <span class="now-price">¥{{food.price}}</span>
                   <span v-show="food.oldPrice" class="old-price">¥{{food.oldPrice}}</span>
                 </div>
+                <div class="cartcontrol-wrapper">
+                  <cartcontrol :food="food" @cartadd="cartadd"></cartcontrol>
+                </div>
               </div>
             </li>
           </ul>
         </li>
       </ul>
     </div>
-    <shopcart :deliveryPrice="seller.deliveryPrice" :minPrice="seller.minPrice"></shopcart>
+    <shopcart ref="shopcart" :deliveryPrice="seller.deliveryPrice" :minPrice="seller.minPrice" :selectFoods="selectFoods"></shopcart>
   </div>
 </template>
 <script type="text/ecmascript-6">
   import BScroll from 'better-scroll'
   import shopcart from '../shopcart/shopcart.vue'
+  import cartcontrol from '../cartcontrol/cartcontrol.vue'
   const ERR_OK = 0;
   export default {
     data () {
@@ -51,7 +55,8 @@
         }
     },
     components: {
-      shopcart
+      shopcart,
+      cartcontrol
     },
     props: {
       seller: {
@@ -67,6 +72,17 @@
             return i;
           }
         }
+      },
+      selectFoods () {
+        let foods = [];
+        this.goods.forEach((good) => {
+          good.foods.forEach((food) => {
+            if(food.count) {
+              foods.push(food)
+            }
+          })
+        })
+        return foods;
       }
     },
     created () {
@@ -88,7 +104,8 @@
           click: true
         });
         this.foodsScroll = new BScroll(this.$refs.foodsWrapper, {
-          probeType: 3
+          probeType: 3,
+          click: true
         })
         this.foodsScroll.on('scroll', (pos) => {
           this.scrollY = Math.abs(Math.round(pos.y));
@@ -109,8 +126,17 @@
         }
         this.scrollY = this.listHeight[index];
         this.foodsScroll.scrollTo(0, -this.scrollY, 300)
+      },
+      cartadd (target) {
+        this.$refs.shopcart.drop(target);
+
       }
-    }
+    },
+//    event: {
+//      'cart.add' (target) {
+//        console.log(target)
+//      }
+//    }
   }
 </script>
 <style>
@@ -207,6 +233,12 @@
   .foods-wrapper .food-item .content {
     flex: 1;
     padding-top: 2px;
+    position: relative;
+  }
+  .foods-wrapper .food-item .content .cartcontrol-wrapper {
+    position: absolute;
+    bottom: 0;
+    right: 18px;
   }
   .foods-wrapper .food-item .content .name {
     font-size: 14px;

@@ -11,15 +11,44 @@
         <div class="price">¥{{totalPrice}}</div>
         <div class="desc">另需配送费¥{{deliveryPrice}}元</div>
       </div>
-      <div class="content-right">¥{{minPrice}}起送</div>
+      <div class="content-right">
+        <div class="pay" :class="payClass">
+          {{payDesc}}
+        </div>
+      </div>
+    </div>
+    <div class="ball-container">
+      <transition-group name="drop">
+        <div v-for="ball in balls" :key="ball" v-show="ball.show" class="ball">
+          <div class="inner"></div>
+        </div>
+      </transition-group>
     </div>
   </div>
 </template>
 <script type="text/ecmascript-6">
+  import $ from 'jquery'
   export default {
     data () {
       return {
-
+        balls: [
+          {
+            show: false
+          },
+          {
+            show: false
+          },
+          {
+            show: false
+          },
+          {
+            show: false
+          },
+          {
+            show: false
+          }
+        ],
+        dropBalls: []
       }
     },
     props: {
@@ -27,7 +56,10 @@
         type: Array,
         default () {
           return [
-
+//            {
+//              price: 10,
+//              count: 2
+//            }
           ];
         }
       },
@@ -52,6 +84,37 @@
           count += food.count;
         })
         return count
+      },
+      payDesc () {
+        if (this.totalPrice === 0) {
+          return `¥${this.minPrice}元起送`
+        } else if (this.totalPrice < this.minPrice) {
+          return `还差¥${this.minPrice - this.totalPrice}起送`
+        } else if(this.totalPrice >= this.minPrice) {
+            return '去结算'
+        }
+      },
+      payClass () {
+        if (this.totalPrice < this.minPrice) {
+          return 'no-enough'
+        } else {
+          return 'enough'
+        }
+      }
+    },
+    methods: {
+      drop (el) {
+        console.log(el)
+        console.log($(el))
+        for (let i=0; i<this.balls.length; i++) {
+          let ball = this.balls[i];
+          if(!ball.show) {
+            ball.show = true;
+            ball.el = el;
+            this.dropBalls.push(ball);
+            return;
+          }
+        }
       }
     }
   }
@@ -65,6 +128,28 @@
     width: 100%;
     height: 48px;
   }
+  .ball-container {
+
+  }
+  .ball-container .ball {
+    position: fixed;
+    left: 32px;
+    bottom: 22px;
+    z-index: 200;
+  }
+  .ball-container .ball .inner {
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: rgb(0, 160, 220);
+  }
+  .ball-container .drop-enter-active {
+    transition: all 0.4s;
+  }
+  .ball-container .drop-enter-active .inner {
+    transition: all 0.4s;
+  }
+
   .shopcart .content {
     display: flex;
     background-color: #141d27;
@@ -152,11 +237,20 @@
     width: 105px;
     background: #2b343c;
     font-size: 12px;
-    color: rgba(255, 255, 255, 0.4);
-    font-weight: 700;
     line-height: 48px;
-    padding: 0 8px;
     text-align: center;
-
+  }
+  .shopcart .content .content-right .pay {
+    padding: 0 8px;
+    font-weight: 700;
+    color: rgba(255, 255, 255, 0.4);
+  }
+  .shopcart .content .content-right .pay.no-enough {
+    background: #2b343c;
+    color: rgba(255, 255, 255, 0.4);
+  }
+  .shopcart .content .content-right .pay.enough {
+    background: #00b43c;
+    color: #fff;
   }
 </style>
