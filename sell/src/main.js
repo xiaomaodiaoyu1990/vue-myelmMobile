@@ -5,6 +5,7 @@ import App from './App'
 import router from './router'
 import VueResource from 'vue-resource'
 import $ from 'jquery'
+import 'lib-flexible/flexible'
 
 Vue.config.productionTip = false
 

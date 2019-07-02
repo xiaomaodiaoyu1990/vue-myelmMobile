@@ -53,23 +53,23 @@ module.exports = {
           name: utils.assetsPath('fonts/[name].[hash:7].[ext]')
         }
       }
-    ],
-    plugins: [
-      new webpack.optimize.CommonsChunkPlugin('common.js'),
-      new webpack.ProvidePlugin({
-        jQuery: "jquery",
-        $: "jquery"
-      })
-
     ]
-    //plugins: [
+    //plugins: [ // webpack 2.2以下版本plugins写在这里
     //  new webpack.optimize.CommonsChunkPlugin('common.js'),
     //  new webpack.ProvidePlugin({
     //    jQuery: "jquery",
     //    $: "jquery"
     //  })
     //]
-  }
+  },
+  plugins: [ // webp 2.2+版本plugins写在这里
+    new webpack.optimize.CommonsChunkPlugin('common.js'),
+    new webpack.ProvidePlugin({
+      jQuery: "jquery",
+      $: "jquery"
+    })
+
+  ]
 }
 
 
